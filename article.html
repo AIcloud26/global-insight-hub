@@ -5,228 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Article - Global Insight Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #FFFFFF;
-            color: #111827;
-            line-height: 1.6;
-        }
-        
-        nav {
-            background: #FFFFFF;
-            border-bottom: 1px solid #E5E7EB;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2563EB;
-            text-decoration: none;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #6B7280;
-            font-weight: 500;
-        }
-        
-        .nav-links a:hover {
-            color: #2563EB;
-        }
-        
-        .article-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-        
-        .article-header {
-            margin-bottom: 2rem;
-        }
-        
-        .article-category {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: #DBEAFE;
-            color: #2563EB;
-            border-radius: 2rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-        
-        .article-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-        
-        .article-meta {
-            display: flex;
-            gap: 2rem;
-            color: #6B7280;
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-        }
-        
-        .featured-image {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            border-radius: 0.75rem;
-            margin-bottom: 2rem;
-        }
-        
-        .article-content {
-            font-size: 1.125rem;
-            line-height: 1.8;
-        }
-        
-        .article-content p {
-            margin-bottom: 1.5rem;
-        }
-        
-        .article-content h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 2.5rem 0 1rem;
-        }
-        
-        .article-content h3 {
-            font-size: 1.35rem;
-            font-weight: 600;
-            margin: 2rem 0 0.75rem;
-        }
-        
-        .back-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #2563EB;
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 2rem;
-        }
-        
-        .back-link:hover {
-            text-decoration: underline;
-        }
-        
-        .related-articles {
-            margin-top: 4rem;
-            padding-top: 3rem;
-            border-top: 1px solid #E5E7EB;
-        }
-        
-        .related-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-        
+        :root { --primary: #2563EB; --text: #111827; --gray: #6B7280; --border: #E5E7EB; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #fff; color: var(--text); line-height: 1.7; }
+        nav { background: #fff; border-bottom: 1px solid var(--border); padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .nav-inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.25rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .back { color: var(--gray); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+        .back:hover { color: var(--primary); }
+        .article { max-width: 800px; margin: 0 auto; padding: 3rem 2rem; }
+        .header { margin-bottom: 2rem; }
+        .tag { display: inline-block; padding: 0.3rem 0.8rem; background: #DBEAFE; color: var(--primary); border-radius: 1rem; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.75rem; }
+        h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+        .meta { display: flex; gap: 1.5rem; color: var(--gray); font-size: 0.9rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .cover { width: 100%; height: 400px; object-fit: cover; border-radius: 0.75rem; margin-bottom: 2rem; background: #F3F4F6; }
+        .content { font-size: 1.1rem; color: #374151; }
+        .content h2 { font-size: 1.6rem; font-weight: 700; margin: 2.5rem 0 1rem; }
+        .content h3 { font-size: 1.3rem; font-weight: 600; margin: 2rem 0 0.75rem; }
+        .content p { margin-bottom: 1.25rem; }
+        .content ul, .content ol { margin: 1rem 0 1rem 2rem; }
+        .content li { margin-bottom: 0.5rem; }
+        .content blockquote { border-left: 4px solid var(--primary); padding-left: 1rem; margin: 1.5rem 0; color: var(--gray); font-style: italic; }
+        .content code { background: #F3F4F6; padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.95em; }
+        .content pre { background: #111827; color: #E5E7EB; padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; margin: 1.5rem 0; }
+        .loading, .error { text-align: center; padding: 4rem 2rem; color: var(--gray); }
         @media (max-width: 768px) {
-            .article-title {
-                font-size: 1.75rem;
-            }
-            
-            .featured-image {
-                height: 300px;
-            }
-            
-            .article-container {
-                padding: 2rem 1rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
+            h1 { font-size: 1.6rem; }
+            .cover { height: 220px; }
+            .article { padding: 2rem 1rem; }
         }
     </style>
 </head>
 <body>
     <nav>
-        <div class="nav-container">
+        <div class="nav-inner">
             <a href="index.html" class="logo">Global Insight Hub</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="technology.html">Technology</a></li>
-                <li><a href="finance.html">Finance</a></li>
-                <li><a href="ai-tools.html">AI Tools</a></li>
-                <li><a href="health-lifestyle.html">Health & Lifestyle</a></li>
-            </ul>
+            <a href="index.html" class="back">← Back to Home</a>
         </div>
     </nav>
 
-    <article class="article-container">
-        <a href="index.html" class="back-link">← Back to Articles</a>
-        
-        <div class="article-header">
-            <span class="article-category">Technology</span>
-            <h1 class="article-title">The Future of Quantum Computing: What to Expect in 2026</h1>
-            <div class="article-meta">
-                <span>By Sarah Johnson</span>
-                <span>April 18, 2026</span>
-                <span>12.5K views</span>
-                <span>8 min read</span>
-            </div>
-        </div>
-        
-        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200" 
-             alt="Quantum Computing" class="featured-image">
-        
-        <div class="article-content">
-            <p class="lead">Quantum computing is no longer just a theoretical concept—it's becoming a reality that's set to transform industries worldwide. As we move through 2026, let's explore the breakthroughs and applications that are reshaping our technological landscape.</p>
-            
-            <h2>The Quantum Advantage</h2>
-            <p>Unlike classical computers that use bits (0s and 1s), quantum computers use quantum bits or "qubits" that can exist in multiple states simultaneously. This fundamental difference allows quantum computers to solve certain complex problems exponentially faster than traditional supercomputers.</p>
-            
-            <h3>Key Applications in 2026</h3>
-            <p>This year has seen remarkable progress in several areas:</p>
-            <p><strong>Drug Discovery:</strong> Pharmaceutical companies are leveraging quantum algorithms to simulate molecular interactions, reducing drug development time from years to months.</p>
-            
-            <p><strong>Financial Modeling:</strong> Investment firms are using quantum computing for risk analysis and portfolio optimization, processing vast datasets in real-time.</p>
-            
-            <p><strong>Cybersecurity:</strong> While quantum computers pose threats to current encryption methods, they're also enabling the development of quantum-resistant cryptography.</p>
-            
-            <h2>Industry Leaders Making Waves</h2>
-            <p>Major tech companies including IBM, Google, and emerging startups are racing to achieve quantum supremacy. IBM's latest 1000+ qubit processor represents a significant milestone in making quantum computing more accessible and practical for enterprise applications.</p>
-            
-            <h2>What's Next?</h2>
-            <p>As we look ahead, experts predict that hybrid quantum-classical systems will become the norm, allowing businesses to leverage quantum advantages without completely overhauling their existing infrastructure. The next 12-18 months will be critical in determining which industries adopt quantum solutions first.</p>
-            
-            <p>The quantum revolution is here, and it's transforming how we approach some of humanity's most complex challenges. Stay tuned as we continue to cover this exciting field.</p>
-        </div>
-        
-        <div class="related-articles">
-            <h2 class="related-title">Related Articles</h2>
-            <div id="relatedArticles"></div>
-        </div>
+    <article class="article" id="articleBox">
+        <div class="loading">📖 Loading article...</div>
     </article>
+
+    <script>
+        const id = new URLSearchParams(window.location.search).get('id');
+        const box = document.getElementById('articleBox');
+
+        async function load() {
+            if (!id) { box.innerHTML = '<div class="error">❌ Missing article ID</div>'; return; }
+            try {
+                const res = await fetch('posts.json');
+                const posts = await res.json();
+                const post = posts.find(p => p.id === id);
+                if (!post) { box.innerHTML = '<div class="error">❌ Article not found</div>'; return; }
+
+                const html = DOMPurify.sanitize(marked.parse(post.content));
+                box.innerHTML = `
+                    <div class="header">
+                        <span class="tag">${post.category}</span>
+                        <h1>${post.title}</h1>
+                        <div class="meta">
+                            <span>📅 ${post.date}</span>
+                            <span>✍️ ${post.author || 'Editor'}</span>
+                            <span>⏱️ ${post.readTime || '5 min'}</span>
+                        </div>
+                    </div>
+                    <img src="${post.image}" alt="${post.title}" class="cover" loading="lazy" onerror="this.src='https://via.placeholder.com/800x400?text=Cover+Image'">
+                    <div class="content">${html}</div>
+                `;
+                document.title = `${post.title} - Global Insight Hub`;
+            } catch (e) {
+                box.innerHTML = `<div class="error">❌ Load failed<br><small>${e.message}</small></div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', load);
+    </script>
 </body>
 </html>
