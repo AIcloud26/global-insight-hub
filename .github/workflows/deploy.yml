@@ -1,0 +1,43 @@
+name:  Auto Deploy Global Insight Hub
+
+on:
+  workflow_dispatch:  #  允许手动点击按钮触发
+  push:
+    branches: [main]  # 监听 main 分支（如果你的主分支叫 master，改成 master）
+    paths:
+      - 'posts.json'
+      - 'index.html'
+      - 'article.html'
+      - 'assets/**'
+
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 📥 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 🔍 校验 posts.json 格式
+        run: |
+          echo "正在检查 JSON 语法..."
+          if ! python -m json.tool posts.json > /dev/null 2>&1; then
+            echo "❌ 失败：posts.json 存在语法错误！"
+            echo "💡 请使用 https://csvjson.com 重新生成合法 JSON"
+            exit 1
+          fi
+          echo "✅ JSON 格式正确，继续部署"
+
+      - name: 📏 检查仓库体积
+        run: |
+          SIZE=$(du -sm . | cut -f1)
+          if [ $SIZE -gt 100 ]; then
+            echo "⚠️ 警告：仓库 ${SIZE}MB 偏大，建议压缩图片"
+          else
+            echo "✅ 体积正常 (${SIZE}MB)"
+          fi
+
+      - name: 🎉 部署完成提示
+        run: |
+          echo "✅ 验证通过！GitHub Pages 将在 2 分钟内自动更新网站。"
+          echo "🌐 访问地址：https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
