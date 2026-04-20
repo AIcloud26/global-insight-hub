@@ -1,0 +1,44 @@
+name: 🚀 Auto Deploy & Validate
+
+on:
+  workflow_dispatch:  # 允许手动点击运行
+  push:
+    branches: [main]  # 如果你的默认分支是 master，请改为 [master]
+    paths:
+      - 'posts.json'
+      - 'index.html'
+      - 'article.html'
+      - 'assets/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Validate posts.json syntax
+        run: |
+          echo "Checking JSON format..."
+          if ! python -m json.tool posts.json > /dev/null 2>&1; then
+            echo "❌ ERROR: posts.json contains invalid JSON!"
+            echo "💡 Fix: Paste into https://jsonlint.com or regenerate via writer.html"
+            exit 1
+          fi
+          echo "✅ JSON syntax is valid."
+
+      - name:  Count articles & check size
+        run: |
+          ARTICLES=$(python -c "import json; print(len(json.load(open('posts.json'))))")
+          SIZE=$(du -sm . | cut -f1)
+          echo "📊 Articles: $ARTICLES | Repo size: ${SIZE}MB"
+          if [ "$SIZE" -gt 150 ]; then
+            echo "⚠️ Warning: Repo exceeds 150MB. Consider compressing images."
+          fi
+
+      - name: 🎉 Deployment ready
+        run: |
+          echo "✅ Validation passed!"
+          echo "🌐 GitHub Pages will publish automatically within 2 minutes."
+          echo "URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
