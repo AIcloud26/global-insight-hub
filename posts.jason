@@ -1,24 +1,13 @@
 [
   {
-    "id": "ai-tools-weekly-01",
-    "title": "10 AI Tools That Will Replace Your Daily Apps in 2026",
-    "category": "AI Tools",
+    "id": "welcome-to-global-insight-hub",
+    "title": "Welcome to Global Insight Hub",
+    "category": "Technology",
     "date": "2026-04-20",
-    "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop&q=80",
-    "excerpt": "From writing to scheduling, these AI assistants are quietly taking over our workflows. Here's what you need to know.",
-    "author": "Sarah Chen",
-    "readTime": "6 min",
-    "content": "# The AI Shift is Here\n\nWe used to open 10 different apps to manage our day. Now, **one AI interface** does it all. Let's break down the tools making this happen.\n\n## 1. Autonomous Scheduling\nGone are the days of back-and-forth emails. New AI agents negotiate meeting times across time zones automatically.\n\n## 2. Context-Aware Writing\nUnlike old templates, 2026 models remember your tone, past projects, and brand guidelines. They don't just write—they *adapt*.\n\n> \"The best AI tool is the one you forget you're using.\"\n\n## What's Next?\nExpect voice-first AI assistants to merge with AR glasses by Q3. The boundary between 'app' and 'assistant' is disappearing.\n\nStay tuned for our deep dive on enterprise AI compliance next week."
-  },
-  {
-    "id": "finance-market-q2",
-    "title": "Q2 2026 Market Outlook: Why Cash is King Again",
-    "category": "Finance",
-    "date": "2026-04-18",
-    "image": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=80",
-    "excerpt": "Central bank signals and shifting yield curves suggest a defensive posture may outperform aggressive growth bets this quarter.",
-    "author": "Michael Ross",
-    "readTime": "8 min",
-    "content": "# Cash Isn't Trash Anymore\n\nFor years, 'cash drag' was a dirty word in portfolio management. Today, **short-term treasuries yield 4.8%**, and volatility is making liquidity valuable again.\n\n## Key Indicators to Watch\n- **Inflation stickiness**: Core services remain elevated\n- **Credit spreads**: Widening in high-yield sectors\n- **Dollar strength**: Safe-haven flows persist\n\n## Strategy Shift\n1. Increase T-bill allocation to 15-20%\n2. Hedge equity exposure with put spreads\n3. Monitor commercial real estate refinancing walls\n\n*Disclaimer: This is educational content, not financial advice.*"
+    "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80",
+    "excerpt": "Your new source for tech, finance, AI, and lifestyle insights. Updated weekly.",
+    "author": "Editorial Team",
+    "readTime": "2 min",
+    "content": "# Welcome!\n\nThanks for visiting Global Insight Hub. We publish fresh insights every week on:\n\n- 🚀 Technology trends\n- 📊 Finance & markets\n- 🤖 AI tools & productivity\n- 🏥 Health & lifestyle\n\nStay tuned for our first deep dive next week!"
   }
 ]
