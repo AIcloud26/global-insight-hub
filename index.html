@@ -10,19 +10,29 @@
         :root { --primary: #2563EB; --bg: #FFFFFF; --text: #111827; --gray: #6B7280; --border: #E5E7EB; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
         nav { background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; padding: 1rem 2rem; }
         .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
         .nav-links { display: flex; gap: 1.5rem; list-style: none; }
         .nav-links a { text-decoration: none; color: var(--gray); font-weight: 500; transition: color 0.2s; }
         .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+        
         .hero { background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%); color: white; padding: 4rem 2rem; text-align: center; }
         .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
         .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto 2rem; }
+        
         .container { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+        
+        .search-wrapper { margin-bottom: 1.5rem; position: relative; max-width: 600px; }
+        .search-input { width: 100%; padding: 0.9rem 1rem 0.9rem 3rem; border: 1px solid var(--border); border-radius: 0.75rem; font-size: 1rem; outline: none; transition: all 0.2s; background: #F9FAFB; }
+        .search-input:focus { border-color: var(--primary); background: #FFFFFF; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9CA3AF; font-size: 1.1rem; pointer-events: none; }
+        
         .filters { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 2rem; }
-        .filter-btn { padding: 0.5rem 1.2rem; border: 1px solid var(--border); background: white; border-radius: 2rem; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .filter-btn { padding: 0.5rem 1.2rem; border: 1px solid var(--border); background: white; border-radius: 2rem; cursor: pointer; font-weight: 500; transition: all 0.2s; font-size: 0.95rem; }
         .filter-btn:hover, .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
         .card { background: white; border: 1px solid var(--border); border-radius: 0.75rem; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; }
         .card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
@@ -31,14 +41,18 @@
         .tag { display: inline-block; padding: 0.25rem 0.7rem; background: #DBEAFE; color: var(--primary); border-radius: 1rem; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.75rem; }
         .card h2 { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
         .card p { color: var(--gray); font-size: 0.95rem; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: #9CA3AF; }
+        .meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #9CA3AF; }
         .read-more { color: #F59E0B; font-weight: 600; text-decoration: none; }
-        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray); }
+        
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray); grid-column: 1 / -1; }
+        
         footer { background: #F9FAFB; border-top: 1px solid var(--border); padding: 3rem 2rem 2rem; margin-top: 4rem; text-align: center; color: var(--gray); font-size: 0.9rem; }
+        
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .hero h1 { font-size: 1.8rem; }
             .grid { grid-template-columns: 1fr; }
+            .container { padding: 2rem 1rem; }
         }
     </style>
 </head>
@@ -60,6 +74,11 @@
     </section>
 
     <main class="container">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search articles by title, category, or keyword...">
+        </div>
+
         <div class="filters" id="filters">
             <button class="filter-btn active" data-cat="All">All</button>
             <button class="filter-btn" data-cat="Technology">Technology</button>
@@ -67,6 +86,7 @@
             <button class="filter-btn" data-cat="AI Tools">AI Tools</button>
             <button class="filter-btn" data-cat="Health & Lifestyle">Health & Lifestyle</button>
         </div>
+
         <div class="grid" id="grid">
             <div class="empty-state">📖 Loading articles...</div>
         </div>
@@ -79,23 +99,27 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
         const grid = document.getElementById('grid');
-        const filters = document.querySelectorAll('.filter-btn');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const urlParams = new URLSearchParams(window.location.search);
         let allPosts = [];
 
         async function loadPosts() {
             try {
                 const res = await fetch('posts.json');
-                if (!res.ok) throw new Error('Network response was not ok');
+                if (!res.ok) throw new Error('Failed to fetch posts.json');
                 allPosts = await res.json();
-                renderPosts(allPosts);
+                // 按日期降序排列（最新在前）
+                allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                applyFilters();
             } catch (err) {
-                grid.innerHTML = `<div class="empty-state">⚠️ Failed to load articles. Check posts.json format.<br><small>${err.message}</small></div>`;
+                grid.innerHTML = `<div class="empty-state">⚠️ Failed to load articles.<br><small>${err.message}</small><br>Ensure posts.json exists in the root directory.</div>`;
             }
         }
 
         function renderPosts(posts) {
             if (!posts.length) {
-                grid.innerHTML = '<div class="empty-state">📭 No articles found.</div>';
+                grid.innerHTML = '<div class="empty-state">📭 No articles found. Try a different keyword or category.</div>';
                 return;
             }
             grid.innerHTML = posts.map(p => `
@@ -114,16 +138,51 @@
             `).join('');
         }
 
-        filters.forEach(btn => {
+        function applyFilters() {
+            const query = searchInput.value.trim().toLowerCase();
+            const activeCat = document.querySelector('.filter-btn.active')?.dataset.cat || 'All';
+
+            let filtered = allPosts;
+
+            if (activeCat !== 'All') {
+                filtered = filtered.filter(p => p.category === activeCat);
+            }
+
+            if (query) {
+                filtered = filtered.filter(p =>
+                    p.title.toLowerCase().includes(query) ||
+                    p.excerpt.toLowerCase().includes(query) ||
+                    p.category.toLowerCase().includes(query) ||
+                    (p.author && p.author.toLowerCase().includes(query))
+                );
+            }
+
+            renderPosts(filtered);
+        }
+
+        searchInput.addEventListener('input', () => {
+            applyFilters();
+            if (searchInput.value.trim()) {
+                urlParams.set('q', searchInput.value.trim());
+            } else {
+                urlParams.delete('q');
+            }
+            history.replaceState(null, '', `?${urlParams.toString()}`);
+        });
+
+        filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                filters.forEach(b => b.classList.remove('active'));
+                filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                const cat = btn.dataset.cat;
-                renderPosts(cat === 'All' ? allPosts : allPosts.filter(p => p.category === cat));
+                applyFilters();
             });
         });
 
-        document.addEventListener('DOMContentLoaded', loadPosts);
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialQuery = urlParams.get('q');
+            if (initialQuery) searchInput.value = initialQuery;
+            loadPosts();
+        });
     </script>
 </body>
 </html>
